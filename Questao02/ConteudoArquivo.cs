@@ -40,5 +40,24 @@ namespace Questao02
             }
         }
 
+        public void Imprime(ConteudoArquivo ignoreList)
+        {
+            var palavrasFiltradas = ListaPalavras.Where(p => !ignoreList.ListaPalavras
+                                                                     .Any(x => x.Nome == p.Nome))
+                                                                     .OrderBy(z => z.Nome)
+                                                                     .ToList();
+
+
+            foreach (var palavra in palavrasFiltradas)
+            {
+                Console.Write($"{palavra.Nome} ({palavra.IndicesLinha.Count()}) ");
+                foreach (var linha in palavra.IndicesLinha.Distinct())
+                {
+                    Console.Write($"{linha + 1}, ");
+                }
+                Console.WriteLine();
+            }
+        }
+
     }
 }

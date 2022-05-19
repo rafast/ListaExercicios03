@@ -2,45 +2,54 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Questao01
 {
-    public class ClientesFromString
+    public class ClienteJSON
     {
-        public string Nome { get; set; }
-        public string Cpf { get; set; }
-        public string Dt_nascimento { get; set; }
-        public string Renda_mensal { get; set; }
-        public string Estado_civil { get; set; }
-        public string Dependentes { get; set; }
-        public Dictionary<string, string> validacaoCampos { get; set; } = new();
+        [JsonProperty("dados")]
+        public Cliente cliente { get; set; } = new();
 
-        public ClientesFromString()
+        [JsonProperty("erros")]
+        public List<Erro> Erros { get; set; } = new();
+
+        
+        Dictionary<string, string> validacaoCampos { get; set; } = new();
+
+
+        public ClienteJSON()
         {
         }
 
-        public ClientesFromString(string nome, string cpf, string dataNascimento, string rendaMensal, string estadoCivil, string dependentes)
+        public ClienteJSON(Cliente c)
         {
-            Nome = nome;
-            Cpf = cpf;
-            Dt_nascimento = dataNascimento;
-            Renda_mensal = rendaMensal;
-            Estado_civil = estadoCivil;
-            Dependentes = dependentes;
+            cliente = c;
         }
 
         public void Validacao()
         {
             validacaoCampos = new Dictionary<string, string>();
-            validacaoCampos.Add("Nome", validaNome(Nome));
-            validacaoCampos.Add("Cpf", validaCPF(Cpf));
+            validacaoCampos.Add("Nome", validaNome(cliente.Nome));
+            validacaoCampos.Add("Cpf", validaCPF(cliente.Cpf));
             DateTime dt;
-            validacaoCampos.Add("DataNascimento", validaData(out dt, Dt_nascimento));
+            validacaoCampos.Add("Dt_nascimento", validaData(out dt, cliente.Dt_nascimento));
             float renda;
-            validacaoCampos.Add("RendaMensal", validaRenda(out renda, Renda_mensal));
-            validacaoCampos.Add("EstadoCivil", validaEstadoCivil(Estado_civil));
-            validacaoCampos.Add("Dependentes", validaDependentes(Dependentes));
+            validacaoCampos.Add("Renda_mensal", validaRenda(out renda, cliente.Renda_mensal));
+            validacaoCampos.Add("Estado_civil", validaEstadoCivil(cliente.Estado_civil));
+            validacaoCampos.Add("Dependentes", validaDependentes(cliente.Dependentes));
+            validacaoCampos.Add("Erros", "Valido");
+            validacaoCampos.Add("validacaoCampos", "Valido");
+
+            foreach (var campo in validacaoCampos.Where(campo => campo.Value != "Valido"))
+            {
+                Erro erro = new Erro();
+                erro.Campo = campo.Key;
+                erro.Mensagem = campo.Value;
+                Erros.Add(erro);
+            }
         }
 
         private string validaNome(string nome)
@@ -52,8 +61,7 @@ namespace Questao01
 
         private string validaCPF(string cpf)
         {
-            string padrao = "[0-9]{3}.?[0-9]{3}.?[0-9]{3}-?[0-9]{2}";
-            bool ehValido = Regex.IsMatch(cpf, padrao);
+            bool ehValido = validadorCPF(cpf);
             return ehValido ? "Valido" : "CPF inválido.";
         }
 
@@ -76,7 +84,7 @@ namespace Questao01
         private string validaRenda(out float renda, string inputRendaMensal)
         {
             var culture = CultureInfo.GetCultureInfo("fr-FR");
-            bool ehValido = float.TryParse(inputRendaMensal, NumberStyles.Currency, culture, out renda);
+            bool ehValido = (float.TryParse(inputRendaMensal, NumberStyles.Currency, culture, out renda)) && renda >= 0;
             return ehValido ? "Valido" : "A renda mensal deve ser um valor maior ou igual a zero e possuir vírgula decimal e duas casas decimais.";
         }
 
@@ -97,18 +105,18 @@ namespace Questao01
             return ehValido ? "Valido" : "O número de dependentes deve estar entre 0 e 10.";
         }
 
-        public void ImprimeErros()
-        {
-            Console.WriteLine("O(s) campo(s) abaixo está(ão) inválido(s).");
-            if (!TodosValidos())
-            {
-                foreach (var campo in validacaoCampos.Where(campo => campo.Value != "Valido"))
-                {
-                    Console.WriteLine($"{campo.Key} - {campo.Value}");
-                }
-                Console.WriteLine();
-            }
-        }
+        //public void ImprimeErros()
+        //{
+        //    Console.WriteLine("O(s) campo(s) abaixo está(ão) inválido(s).");
+        //    if (!TodosValidos())
+        //    {
+        //        foreach (var campo in validacaoCampos.Where(campo => campo.Value != "Valido"))
+        //        {
+        //            Console.WriteLine($"{campo.Key} - {campo.Value}");
+        //        }
+        //        Console.WriteLine();
+        //    }
+        //}
 
         public bool TodosValidos()
         {
@@ -116,7 +124,7 @@ namespace Questao01
             return !possuiInvalido;
         }
 
-        public bool Valida(string cpf)
+        public bool validadorCPF(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };

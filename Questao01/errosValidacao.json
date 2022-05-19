@@ -1,0 +1,102 @@
+[
+  {
+    "dados": {
+      "Nome": "Joao",
+      "Cpf": "39401787050",
+      "Dt_nascimento": "13/09/1982",
+      "Renda_mensal": "1835,27",
+      "Estado_civil": "S",
+      "Dependentes": "0"
+    },
+    "erros": [
+      {
+        "Campo": "Nome",
+        "Mensagem": "O nome deve ter pelo menos 5 caracteres."
+      }
+    ]
+  },
+  {
+    "dados": {
+      "Nome": "Leticia Andrade",
+      "Cpf": "25950526081",
+      "Dt_nascimento": "14/01/1999",
+      "Renda_mensal": "4261,39",
+      "Estado_civil": "C",
+      "Dependentes": "1"
+    },
+    "erros": [
+      {
+        "Campo": "Cpf",
+        "Mensagem": "CPF inválido."
+      }
+    ]
+  },
+  {
+    "dados": {
+      "Nome": "Paula da Silva",
+      "Cpf": "80519936086",
+      "Dt_nascimento": "29/02/1981",
+      "Renda_mensal": "3578,10",
+      "Estado_civil": "S",
+      "Dependentes": "1"
+    },
+    "erros": [
+      {
+        "Campo": "Dt_nascimento",
+        "Mensagem": "A data deve estar no formato DD/MM/AAAA. E o cliente deve ter mais de 18 anos."
+      }
+    ]
+  },
+  {
+    "dados": {
+      "Nome": "Mateus Pereira",
+      "Cpf": "61461811023",
+      "Dt_nascimento": "12/05/1978",
+      "Renda_mensal": "-1",
+      "Estado_civil": "V",
+      "Dependentes": "2"
+    },
+    "erros": [
+      {
+        "Campo": "Renda_mensal",
+        "Mensagem": "A renda mensal deve ser um valor maior ou igual a zero e possuir vírgula decimal e duas casas decimais."
+      }
+    ]
+  },
+  {
+    "dados": {
+      "Nome": "Vania Castro",
+      "Cpf": "54303344050",
+      "Dt_nascimento": "09/11/1965",
+      "Renda_mensal": "6852,27",
+      "Estado_civil": "X",
+      "Dependentes": "3"
+    },
+    "erros": [
+      {
+        "Campo": "Cpf",
+        "Mensagem": "CPF inválido."
+      },
+      {
+        "Campo": "Estado_civil",
+        "Mensagem": "Para o estado civil utilize: C, S, V ou D (maiúsculo ou minúsculo)."
+      }
+    ]
+  },
+  {
+    "dados": {
+      "Nome": "Wagner Peixoto",
+      "Cpf": "91490575022",
+      "Dt_nascimento": "22/02/1968",
+      "Renda_mensal": "11387,37",
+      "Estado_civil": "D",
+      "Dependentes": "-1"
+    },
+    "erros": [
+      {
+        "Campo": "Dependentes",
+        "Mensagem": "O número de dependentes deve estar entre 0 e 10."
+      }
+    ]
+  }
+]

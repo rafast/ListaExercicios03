@@ -11,27 +11,26 @@ namespace Questao01
         {
             Console.WriteLine("Testando a Questao01!");
 
-            string jsonString = File.ReadAllText("/Users/rafast/Projects/ListaExercicios03/Questao01/clientes.json");
-            //Console.WriteLine(jsonString);
+            string jsonString = File.ReadAllText("/Users/rafael/Projects/ListaExercicios03/Questao01/clientes.json");
 
 
+            List<Cliente> clientes = JsonConvert.DeserializeObject<List<Cliente>>(jsonString);
+            List<ClienteJSON> listaFinal = new();            
 
-            ClientesFromJSON clientes = new ClientesFromJSON();
-            clientes.clientesJson = JsonConvert.DeserializeObject<List<ClientesFromString>>(jsonString);
-
-            foreach (var cliente in clientes.clientesJson)
+            foreach (var cliente in clientes)
             {
-                cliente.Validacao();
-                Console.WriteLine(cliente.Nome);
-                cliente.ImprimeErros();
-                //Console.WriteLine(cliente.Nome);
-                //Console.WriteLine(cliente.Cpf);
-                //Console.WriteLine(cliente.Dt_nascimento);
-                //Console.WriteLine(cliente.Renda_mensal);
-                //Console.WriteLine(cliente.Estado_civil);
-                //Console.WriteLine(cliente.Dependentes);
-               
+                var clienteJson = new ClienteJSON(cliente);
+                clienteJson.Validacao();
+                if (!clienteJson.TodosValidos())
+                {
+                    listaFinal.Add(clienteJson);
+                }
             }
+
+            var errosValidacao = JsonConvert.SerializeObject(listaFinal, Formatting.Indented);
+            File.WriteAllText("/Users/rafael/Projects/ListaExercicios03/Questao01/errosValidacao.json", errosValidacao);
+
+
 
         }
     }
